@@ -1,6 +1,9 @@
 import 'package:edspert_advance_2/model/course_model.dart';
+import 'package:edspert_advance_2/model/product_model.dart';
 import 'package:edspert_advance_2/repository/course_repository.dart';
-import 'package:edspert_advance_2/screens/course_detail.dart';
+import 'package:edspert_advance_2/repository/product_repository.dart';
+import 'package:edspert_advance_2/screens/all_product_list_screen.dart';
+import 'package:edspert_advance_2/widgets/product_list_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,10 +17,18 @@ class _HomeScreenState extends State<HomeScreen> {
   final courseRepository = CourseRepository();
   CourseResponse? courseResponse;
 
+  final productRepository = ProductRepository();
+  List<Product> productList = [];
+
   @override
   void initState() {
-    getCourseList();
+    getProductList();
     super.initState();
+  }
+
+  void getProductList() async {
+    productList = await productRepository.getProductList();
+    setState(() {});
   }
 
   void getCourseList() async {
@@ -53,45 +64,46 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 500,
-            child: Center(
-              child: ((courseResponse?.data ?? []).isEmpty)
-                  ? const CircularProgressIndicator()
-                  : ListView.separated(
-                      itemCount: courseResponse?.data?.length ?? 0,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CourseDetail(
-                                    course: courseResponse?.data?[index] ??
-                                        CourseData()),
-                              )),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                  courseResponse?.data?[index].courseName ??
-                                      'No Course Name'),
-                            ),
-                          ),
-                        );
-                      },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Pilih Product',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
                     ),
-            ),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AllProductListScreen(
+                                  productList: productList),
+                            ));
+                      },
+                      child: const Text('Lihat Semua'))
+                ],
+              ),
+              _buildProductListWidget(),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {},
-            child: const Text("next page"),
-          )
-        ],
+        ),
       ),
     );
+  }
+
+  Widget _buildProductListWidget() {
+    final productCount = productList.length > 3 ? 3 : productList.length;
+
+    return (productList.isEmpty)
+        ? const CircularProgressIndicator()
+        : ProductListWidget(itemCount: productCount, productList: productList);
   }
 }

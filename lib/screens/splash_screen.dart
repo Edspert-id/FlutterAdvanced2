@@ -1,3 +1,4 @@
+import 'package:edspert_advance_2/constants/color_constants.dart';
 import 'package:edspert_advance_2/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF3A7FD5),
+      backgroundColor: ColorConstants.edspertBlue,
       body: Center(
         child: Image.asset(
           'assets/images/edspert-logo.png',
