@@ -42,7 +42,7 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return SizedBox(
-      width: size.width * 0.5,
+      width: size.width * 0.7,
       child: ElevatedButton(
         onPressed: () {
           Navigator.pushReplacement(

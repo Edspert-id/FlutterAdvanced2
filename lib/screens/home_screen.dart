@@ -1,30 +1,7 @@
-import 'package:edspert_advance_2/screens/subject_detail.dart';
+import 'package:edspert_advance_2/model/course_model.dart';
+import 'package:edspert_advance_2/repository/course_repository.dart';
+import 'package:edspert_advance_2/screens/course_detail.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
-class Subject {
-  final String name;
-  final int exerciseDone;
-  final int exerciseTotal;
-
-  const Subject({
-    required this.exerciseDone,
-    required this.exerciseTotal,
-    required this.name,
-  });
-}
-
-List<Subject> dataPelajaran = [
-  Subject(exerciseDone: 1, exerciseTotal: 50, name: 'Matematika'),
-  Subject(exerciseDone: 2, exerciseTotal: 50, name: 'IPA'),
-  Subject(exerciseDone: 3, exerciseTotal: 50, name: 'Bahasa'),
-];
-
-List<Subject> dataPelajaran2 = [
-  Subject(exerciseDone: 0, exerciseTotal: 50, name: 'Matematika 2'),
-  Subject(exerciseDone: 0, exerciseTotal: 50, name: 'IPA 2'),
-  Subject(exerciseDone: 0, exerciseTotal: 50, name: 'Bahasa 2'),
-];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,6 +11,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final courseRepository = CourseRepository();
+  CourseResponse? courseResponse;
+
+  @override
+  void initState() {
+    getCourseList();
+    super.initState();
+  }
+
+  void getCourseList() async {
+    courseResponse = await courseRepository.getCourseList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,40 +55,40 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          Container(
+          SizedBox(
             height: 500,
             child: Center(
-              child: ListView.separated(
-                itemCount: dataPelajaran.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              SubjectDetail(subject: dataPelajaran[index]),
-                        )),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(dataPelajaran[index].name),
-                      ),
+              child: ((courseResponse?.data ?? []).isEmpty)
+                  ? const CircularProgressIndicator()
+                  : ListView.separated(
+                      itemCount: courseResponse?.data?.length ?? 0,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CourseDetail(
+                                    course: courseResponse?.data?[index] ??
+                                        CourseData()),
+                              )),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  courseResponse?.data?[index].courseName ??
+                                      'No Course Name'),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ),
           ElevatedButton(
-            onPressed: () {
-              setState(() {
-                dataPelajaran.clear();
-                dataPelajaran.addAll(dataPelajaran2);
-              });
-            },
-            child: Text("next page"),
+            onPressed: () {},
+            child: const Text("next page"),
           )
         ],
       ),
