@@ -1,6 +1,6 @@
 import 'package:edspert_advance_2/constants/color_constants.dart';
 import 'package:edspert_advance_2/model/course_model.dart';
-import 'package:edspert_advance_2/screens/course_detail.dart';
+import 'package:edspert_advance_2/screens/exercise_list_screen.dart';
 import 'package:edspert_advance_2/widgets/image_network_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,9 @@ class CourseListWidget extends StatelessWidget {
           onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CourseDetail(course: course),
+                builder: (context) => ExerciseListScreen(
+                  courseId: course.courseId ?? '',
+                ),
               )),
           child: SizedBox(
             height: 96,

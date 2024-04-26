@@ -5,4 +5,5 @@ class ApiContants {
   static String apiUrl = 'https://edspert.widyaedu.com/';
   static String coursePath = 'exercise/data_course';
   static String bannerPath = 'event/list';
+  static String exercisePath = 'exercise/data_exercise';
 }
