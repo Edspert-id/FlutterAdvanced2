@@ -1,11 +1,11 @@
 import 'package:edspert_advance_2/constants/color_constants.dart';
-import 'package:edspert_advance_2/model/product_model.dart';
-import 'package:edspert_advance_2/widgets/product_list_widget.dart';
+import 'package:edspert_advance_2/model/course_model.dart';
+import 'package:edspert_advance_2/widgets/course_list_widget.dart';
 import 'package:flutter/material.dart';
 
-class AllProductListScreen extends StatelessWidget {
-  final List<Product> productList;
-  const AllProductListScreen({super.key, required this.productList});
+class AllCourseListScreen extends StatelessWidget {
+  final List<CourseData> courseList;
+  const AllCourseListScreen({super.key, required this.courseList});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class AllProductListScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: ColorConstants.edspertBlue,
         title: const Text(
-          'Pilih Product',
+          'Pilih Course',
           style: TextStyle(
             fontSize: 18,
             color: Colors.white,
@@ -21,17 +21,15 @@ class AllProductListScreen extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
       ),
-      body: ProductListWidget(
-        itemCount: productList.length,
-        productList: productList,
+      body: CourseListWidget(
+        itemCount: courseList.length,
+        courseList: courseList,
       ),
     );
   }

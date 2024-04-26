@@ -12,13 +12,14 @@ class CourseRepository {
         'major_name': 'IPA',
         'user_email': 'testerngbayu@gmail.com'
       };
-      final headers = {'x-api-key': '18be70c0-4e4d-44ff-a475-50c51ece99a0'};
+      final headers = {'x-api-key': '18be70c0-4e4d-44ff-a475-50c51ece99a3'};
 
       final response = await Dio().get(
         urlPath,
         queryParameters: queryParams,
         options: Options(headers: headers),
       );
+      log('Datanya: ${response.data}');
 
       final data = CourseResponse.fromJson(response.data);
 
