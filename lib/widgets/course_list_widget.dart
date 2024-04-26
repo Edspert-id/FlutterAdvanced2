@@ -1,5 +1,7 @@
+import 'package:edspert_advance_2/constants/color_constants.dart';
 import 'package:edspert_advance_2/model/course_model.dart';
 import 'package:edspert_advance_2/screens/course_detail.dart';
+import 'package:edspert_advance_2/widgets/image_network_widget.dart';
 import 'package:flutter/material.dart';
 
 class CourseListWidget extends StatelessWidget {
@@ -26,29 +28,53 @@ class CourseListWidget extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => CourseDetail(course: course),
               )),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Image.network(
-                    course.urlCover ?? '',
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      height: 50,
-                      width: 50,
-                      color: Colors.grey,
+          child: SizedBox(
+            height: 96,
+            child: Card(
+              color: Colors.white,
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 53,
+                      height: 53,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: ColorConstants.greyBackground,
+                      ),
+                      child: ImageNetworkWidget(
+                        imageUrl: course.urlCover ?? '',
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      course.courseName ?? 'No Course Name',
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            course.courseName ?? 'No Course Name',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            '${course.jumlahDone}/${course.jumlahMateri}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: ColorConstants.greyFont),
+                          ),
+                          const SizedBox(height: 11),
+                          const LinearProgressIndicator(
+                            value: 0.5,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

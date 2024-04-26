@@ -19,7 +19,6 @@ class CourseRepository {
         queryParameters: queryParams,
         options: Options(headers: headers),
       );
-      log('Datanya: ${response.data}');
 
       final data = CourseResponse.fromJson(response.data);
 

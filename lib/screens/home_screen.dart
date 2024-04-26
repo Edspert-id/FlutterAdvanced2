@@ -1,9 +1,15 @@
+import 'package:edspert_advance_2/bloc/banner/banner_bloc.dart';
 import 'package:edspert_advance_2/bloc/course/course_bloc.dart';
+import 'package:edspert_advance_2/constants/color_constants.dart';
+import 'package:edspert_advance_2/model/banner_model.dart';
 import 'package:edspert_advance_2/model/course_model.dart';
+import 'package:edspert_advance_2/repository/banner_repository.dart';
 import 'package:edspert_advance_2/repository/course_repository.dart';
 import 'package:edspert_advance_2/screens/all_course_list_screen.dart';
 import 'package:edspert_advance_2/widgets/course_list_widget.dart';
+import 'package:edspert_advance_2/widgets/image_network_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,10 +17,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CourseBloc(courseRepository: CourseRepository())
-        ..add(GetCourseEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CourseBloc(courseRepository: CourseRepository())
+            ..add(GetCourseEvent()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              BannerBloc(BannerRepository())..add(GetBannerEvent()),
+        ),
+      ],
       child: Scaffold(
+        backgroundColor: ColorConstants.greyBackground,
         appBar: AppBar(
           title: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,45 +59,129 @@ class HomeScreen extends StatelessWidget {
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(12),
-            child: BlocBuilder<CourseBloc, CourseState>(
-              builder: (context, state) {
-                print('Current State: ${state.runtimeType}');
-                if (state is CourseSuccess) {
-                  return Column(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 147,
+                  decoration: BoxDecoration(
+                    color: ColorConstants.edspertBlue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Pilih Course',
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 26, left: 20),
+                          child: Text(
+                            'Mau kerjain\nlatihan soal\napa hari ini?',
                             style: TextStyle(
-                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
                               fontSize: 16,
                             ),
                           ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AllCourseListScreen(
-                                        courseList: state.courseList,
-                                      ),
-                                    ));
-                              },
-                              child: const Text('Lihat Semua'))
-                        ],
+                        ),
                       ),
-                      _buildCourseListWidget(state.courseList),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: Image.asset('assets/images/home-banner.png'),
+                        ),
+                      ),
                     ],
-                  );
-                }
-
-                return const CircularProgressIndicator();
-              },
+                  ),
+                ),
+                const SizedBox(height: 25),
+                BlocBuilder<CourseBloc, CourseState>(
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Pilih Course',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                if (state is CourseSuccess) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            AllCourseListScreen(
+                                          courseList: state.courseList,
+                                        ),
+                                      ));
+                                }
+                              },
+                              child: const Text('Lihat Semua'),
+                            )
+                          ],
+                        ),
+                        if (state is CourseSuccess)
+                          _buildCourseListWidget(state.courseList)
+                        else
+                          const CircularProgressIndicator(),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 27),
+                BlocBuilder<BannerBloc, BannerState>(
+                  builder: (context, state) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Terbaru',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        if (state is BannerSuccess)
+                          _buildBannerListWidget(state.bannerList)
+                        else
+                          const Center(child: CircularProgressIndicator())
+                      ],
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBannerListWidget(List<BannerData> bannerList) {
+    return SizedBox(
+      height: 146,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          final banner = bannerList[index];
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: ImageNetworkWidget(
+              imageUrl: banner.eventImage ?? '',
+              height: 146,
+              width: 284,
+            ),
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        itemCount: bannerList.length,
       ),
     );
   }
