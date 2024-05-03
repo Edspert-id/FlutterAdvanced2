@@ -1,19 +1,7 @@
-import 'package:edspert_advance_2/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'src/presentation/app.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: SplashScreen(),
-    );
-  }
 }
