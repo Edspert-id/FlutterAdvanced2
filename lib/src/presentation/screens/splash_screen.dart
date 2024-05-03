@@ -1,6 +1,9 @@
 import 'package:edspert_advance_2/src/core/constants/color_constants.dart';
+import 'package:edspert_advance_2/src/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../manager/auth/auth_bloc.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,24 +24,50 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3))
-        .then((value) => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LoginScreen(),
-            )));
+    // Future.delayed(const Duration(seconds: 3))
+    //     .then((value) => Navigator.pushReplacement(
+    //         context,
+    //         MaterialPageRoute(
+    //           builder: (context) => const LoginScreen(),
+    //         )));
+    context.read<AuthBloc>().add(IsSignedInWithGoogleEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstants.edspertBlue,
-      body: Center(
-        child: Image.asset(
-          'assets/images/edspert-logo.png',
-          width: size.width * 0.5,
-          fit: BoxFit.cover,
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (AuthState prevState, AuthState nextState) =>
+          prevState is IsSignedInWithGoogleLoading &&
+          (nextState is IsSignedInWithGoogleSuccess ||
+              nextState is IsSignedInWithGoogleError),
+      listener: (context, state) {
+        if (state is IsSignedInWithGoogleSuccess) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ),
+          );
+        }
+
+        if (state is IsSignedInWithGoogleError) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: ColorConstants.edspertBlue,
+        body: Center(
+          child: Image.asset(
+            'assets/images/edspert-logo.png',
+            width: size.width * 0.5,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );

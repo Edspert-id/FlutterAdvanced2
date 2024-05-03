@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../manager/auth/auth_bloc.dart';
 import '../widgets/login_button.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -37,14 +40,50 @@ class LoginScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const Column(
+            Column(
               children: [
-                LoginButton(
-                  loginButtonVariant: LoginButtonVariant.google,
+                BlocConsumer<AuthBloc, AuthState>(
+                  /// Listener
+                  listenWhen: (prev, next) =>
+                      prev is SignInGoogleLoading &&
+                      (next is SignInGoogleError ||
+                          next is SignInGoogleSuccess),
+                  listener: (context, state) {
+                    print('Listener: AuthBloc...');
+
+                    if (state is SignInGoogleSuccess) {
+                      print('Google Sign In Success: ${state.email}');
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterScreen()),
+                      );
+                    }
+                  },
+
+                  /// Builder
+                  buildWhen: (prev, next) =>
+                      prev is SignInGoogleLoading &&
+                      (next is SignInGoogleError ||
+                          next is SignInGoogleSuccess),
+                  builder: (context, state) {
+                    print('Buidler: AuthBloc...');
+
+                    if (state is SignInGoogleLoading) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    return LoginButton(
+                      loginButtonVariant: LoginButtonVariant.google,
+                      onPressed: () {
+                        context.read<AuthBloc>().add(SignInWithGoogleEvent());
+                      },
+                    );
+                  },
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 LoginButton(
                   loginButtonVariant: LoginButtonVariant.apple,
+                  onPressed: () {},
                 ),
               ],
             )

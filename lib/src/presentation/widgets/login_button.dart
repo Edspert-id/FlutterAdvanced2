@@ -36,8 +36,13 @@ enum LoginButtonVariant {
 
 class LoginButton extends StatelessWidget {
   final LoginButtonVariant loginButtonVariant;
+  final VoidCallback onPressed;
 
-  const LoginButton({super.key, required this.loginButtonVariant});
+  const LoginButton({
+    super.key,
+    required this.loginButtonVariant,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +50,10 @@ class LoginButton extends StatelessWidget {
     return SizedBox(
       width: size.width * 0.7,
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
-              ));
-        },
-        style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(loginButtonVariant.buttonColor)),
+        onPressed: onPressed,
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStatePropertyAll(loginButtonVariant.buttonColor)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "651532358701",
+    "project_id": "edspert-2222",
+    "storage_bucket": "edspert-2222.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651532358701:android:222adeef47f19052cd14a4",
+        "android_client_info": {
+          "package_name": "com.example.edspert_advance_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQhdcPQm6JsHLLsePJQeq4eY6DjeGteqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
