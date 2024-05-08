@@ -17,6 +17,10 @@ dependencies:
   firebase_auth: ^4.17.8
   equatable: ^2.0.5
   cloud_firestore: ^4.15.8
+  hl_image_picker: ^1.2.14
+  firebase_storage: ^11.6.9
+  bloc: ^8.1.4
+  image_picker: ^1.0.8
 
 dev_dependencies:
   flutter_test:

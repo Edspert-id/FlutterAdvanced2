@@ -1,3 +1,5 @@
+import 'package:edspert_advance_2/src/data/repositories/profile_repository_impl.dart';
+import 'package:edspert_advance_2/src/domain/usecases/upload_image_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,6 +9,8 @@ import '../domain/repositories/auth_repository.dart';
 import '../domain/usecases/is_signed_in_with_google_usecase.dart';
 import '../domain/usecases/sign_in_with_google_usecase.dart';
 import 'manager/auth/auth_bloc.dart';
+import 'manager/home_nav/home_nav_cubit.dart';
+import 'manager/profile/profile_bloc.dart';
 import 'screens/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -25,6 +29,12 @@ class MyApp extends StatelessWidget {
               SignInWithGoogleUsecase(authRepository),
             );
           },
+        ),
+        BlocProvider(create: (context) => HomeNavCubit()),
+        BlocProvider(
+          create: (context) => ProfileBloc(
+            UploadImageUsecase(ProfileRepositoryImpl()),
+          ),
         ),
       ],
       child: const MaterialApp(
